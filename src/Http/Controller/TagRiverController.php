@@ -43,14 +43,6 @@ class TagRiverController
 
 			$articles = $this->apirequest->call();
 
-			$articles = $articles->map(function ($article) {
-				//print_r($article);
-			    return collect($article)
-			        ->only(['title', 'excerpt'])
-			        ->merge(isset($article["images"]['thumbnail']) ? $article["images"]['thumbnail'] : [])
-			        ->all();
-			});
-
 	    }
 	    else
 	    {
@@ -63,16 +55,17 @@ class TagRiverController
 
 	    		$articles = $this->apirequest->callLocal();
 
-	    		$articles = $articles->map(function ($article) {
-
-				    return collect($article)
-				        ->only(['title', 'excerpt'])
-				        ->merge(isset($article["images"]['thumbnail']) ? $article["images"]['thumbnail'] : [])
-				        ->all();
-				});
     		}
 
 	    }
+
+	    $articles = $articles->map(function ($article) {
+
+				return collect($article)
+			        ->only(['title', 'excerpt'])
+			        ->merge(isset($article["images"]['thumbnail']) ? $article["images"]['thumbnail'] : [])
+			        ->all();
+			});
 
 		return new HtmlResponse( $this->blade->run("articles", ['articles' => $articles]));
 
